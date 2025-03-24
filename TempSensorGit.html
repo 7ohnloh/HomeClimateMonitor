@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ESP32 Temperature & Humidity Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+    }
+    .data-box {
+      margin-top: 20px;
+      font-size: 2rem;
+      color: #444;
+      background: #fff;
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .highlight {
+      font-size: 3rem;
+      color: #ff5722;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌡️ ESP32 Temperature & Humidity Monitor</h1>
+
+  <div class="data-box">
+    <div>Temperature:</div>
+    <div class="highlight" id="tempValue">Loading...</div>
+    <div style="margin-top: 20px;">Humidity:</div>
+    <div class="highlight" id="humValue">Loading...</div>
+  </div>
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+        projectId: "YOUR_PROJECT_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Temperature reference
+    database.ref('/temperature').on('value', (snapshot) => {
+      const temp = snapshot.val();
+      document.getElementById('tempValue').textContent =
+        temp !== null ? `${temp.toFixed(1)} °C` : 'No Data';
+    });
+
+    // Humidity reference
+    database.ref('/humidity').on('value', (snapshot) => {
+      const hum = snapshot.val();
+      document.getElementById('humValue').textContent =
+        hum !== null ? `${hum.toFixed(1)} %` : 'No Data';
+    });
+  </script>
+
+</body>
+</html>
